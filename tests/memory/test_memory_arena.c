@@ -38,35 +38,37 @@ test_arena_create(void)
 static void
 test_arena_push(void)
 {
-  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, struct Arena), "data should not be null");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(48, arena_used(&arena), "arena memory used should be 48 bytes");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(65488, arena_available(&arena), "arena memory available should be 65488 bytes");
+  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, U64), "data should not be null");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(8, arena_used(&arena), "arena memory used should be 48 bytes");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(65528, arena_available(&arena), "arena memory available should be 65528 bytes");
 }
 
 static void
-scratch_arena_push(struct Arena scratch)
+scratch_arena_push(struct Arena* scratch)
 {
-  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&scratch, struct Arena, 3), "data should not be null");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(240, arena_used(&scratch), "arena memory used should be 240 bytes");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(65296, arena_available(&scratch), "arena memory available should be 65296 bytes");
+  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(scratch, U64, 3), "data should not be null");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(40, arena_used(scratch), "arena memory used should be 40 bytes");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(65496, arena_available(scratch), "arena memory available should be 65496 bytes");
 }
 
 static void
 test_scratch_arena_push(void)
 {
-  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, struct Arena, 2), "data should not be null");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(96, arena_used(&arena), "arena memory used should be 96 bytes");
-  scratch_arena_push(arena);
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(96, arena_used(&arena), "arena memory used should be 96 bytes");
-  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, struct Arena, 3), "data should not be null");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(240, arena_used(&arena), "arena memory used should be 240 bytes");
+  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, U64, 2), "data should not be null");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(16, arena_used(&arena), "arena memory used should be 16 bytes");
+  struct Arena scratch = arena;
+  scratch_arena_push(&scratch);
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(16, arena_used(&arena), "arena memory used should be 16 bytes");
+  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, U64, 3), "data should not be null");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(40, arena_used(&arena), "arena memory used should be 40 bytes");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(65496, arena_available(&arena), "arena memory available should be 65496 bytes");
 }
 
 static void
 test_arena_clear(void)
 {
-  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, struct Arena, 2), "data should not be null");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(96, arena_used(&arena), "arena memory used should be 96 bytes");
+  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, U64, 2), "data should not be null");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(16, arena_used(&arena), "arena memory used should be 16 bytes");
   arena_clear(&arena);
   TEST_ASSERT_EQUAL_UINT64_MESSAGE(0, arena_used(&arena), "arena memory used should be 0 bytes");
   TEST_ASSERT_EQUAL_UINT64_MESSAGE(65536, arena_available(&arena), "arena memory available should be 65536 bytes");
@@ -80,9 +82,9 @@ test_arena_destroy(void)
   arena_destroy(&arena);
   TEST_ASSERT_EQUAL_UINT64_MESSAGE(0, arena_used(&arena), "arena memory used should be 0 bytes");
   TEST_ASSERT_EQUAL_UINT64_MESSAGE(0, arena_available(&arena), "arena memory available should be 0 bytes");
-  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, struct Arena, 10), "data should not be null");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(480, arena_used(&arena), "arena memory used should be 480 bytes");
-  TEST_ASSERT_EQUAL_UINT64_MESSAGE(65056, arena_available(&arena), "arena memory available should be 65056 bytes");
+  TEST_ASSERT_NOT_NULL_MESSAGE(arena_push(&arena, U64, 10), "data should not be null");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(80, arena_used(&arena), "arena memory used should be 80 bytes");
+  TEST_ASSERT_EQUAL_UINT64_MESSAGE(65456, arena_available(&arena), "arena memory available should be 65456 bytes");
 }
 
 int

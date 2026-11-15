@@ -37,7 +37,7 @@ arena_destroy(struct Arena* arena)
 }
 
 void*
-arena_push_(struct Arena* arena, SSize size, SSize align, U64 count)
+arena_push_(struct Arena* arena, USize size, USize align, U64 count)
 {
   if (arena->buf == 0)
   {
@@ -51,18 +51,18 @@ arena_push_(struct Arena* arena, SSize size, SSize align, U64 count)
     }
   }
 
-  const U64 pre_commit  = AlignPow2(arena->offset, align);
-  const U64 post_commit = pre_commit + (size * count);
+  const USize pre_commit  = AlignPow2(arena->offset, align);
+  const USize post_commit = pre_commit + (size * count);
 
-  const U64 zero_memory_size = Min(arena->committed, post_commit) - pre_commit;
+  const USize zero_memory_size = Min(arena->committed, post_commit) - pre_commit;
 
   if (arena->committed < post_commit)
   {
-    U64 commit_post_aligned = post_commit + arena->committed - 1;
+    USize commit_post_aligned = post_commit + arena->committed - 1;
     commit_post_aligned -= commit_post_aligned % arena->committed;
-    const U64 commit_post_clamped = ClampTop(commit_post_aligned, arena->config.reserve);
-    const U64 commit_size         = commit_post_clamped - arena->committed;
-    U8*       commit_ptr          = arena->buf + arena->committed;
+    const USize commit_post_clamped = ClampTop(commit_post_aligned, arena->config.reserve);
+    const USize commit_size         = commit_post_clamped - arena->committed;
+    U8*         commit_ptr          = arena->buf + arena->committed;
     memory_commit(commit_ptr, commit_size);
     arena->committed = commit_post_clamped;
   }
@@ -98,13 +98,13 @@ arena_clear(struct Arena* arena)
   arena->offset = 0;
 }
 
-U64
+USize
 arena_used(const struct Arena* arena)
 {
   return arena->offset;
 }
 
-U64
+USize
 arena_available(const struct Arena* arena)
 {
   return arena->committed - arena->offset;

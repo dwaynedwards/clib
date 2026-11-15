@@ -54,7 +54,7 @@ arena_destroy(struct Arena* arena);
 #define arena_push4(arena, s, a, c)     CastPtr(void, arena_push_(arena, s, a, c))
 
 void*
-arena_push_(struct Arena* arena, SSize size, SSize align, U64 count);
+arena_push_(struct Arena* arena, USize size, USize align, U64 count);
 
 const void*
 arena_peek(const struct Arena* arena);
@@ -62,10 +62,10 @@ arena_peek(const struct Arena* arena);
 void
 arena_clear(struct Arena* arena);
 
-U64
+USize
 arena_used(const struct Arena* arena);
 
-U64
+USize
 arena_available(const struct Arena* arena);
 
 #endif // CLIB_MEMORY_ARENA_H
